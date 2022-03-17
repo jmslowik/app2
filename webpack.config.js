@@ -43,7 +43,9 @@ module.exports = (_, argv) => ({
     new ModuleFederationPlugin({
       name: "app2",
       filename: "remoteEntry.js",
-      remotes: {},
+      remotes: {
+        app1: `app1@${argv.mode === "production" ? "https://app1-jmslowik.vercel.app" : "http://localhost:3001"}/remoteEntry.js`,
+      },
       exposes: {
         './ComponentApp2': './src/ComponentApp2'
       },
