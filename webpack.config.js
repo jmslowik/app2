@@ -4,7 +4,7 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
   output: {
-    publicPath: argv.mode === "production" ? "https://app2-jmslowik.vercel.app/" : "http://localhost:3002/",
+    publicPath: "/app2",
   },
 
   resolve: {
@@ -14,6 +14,13 @@ module.exports = (_, argv) => ({
   devServer: {
     port: 3002,
     historyApiFallback: true,
+    proxy: {
+      '/app1': {
+        target: 'http://localhost:3002',
+        router: () => 'http://localhost:3001',
+        logLevel: 'debug',
+      },
+    },
   },
 
   module: {
@@ -44,7 +51,7 @@ module.exports = (_, argv) => ({
       name: "app2",
       filename: "remoteEntry.js",
       remotes: {
-        app1: `app1@${argv.mode === "production" ? "https://app1-jmslowik.vercel.app" : "http://localhost:3001"}/remoteEntry.js`,
+        app1: `app1@$/app1/remoteEntry.js`,
       },
       exposes: {
         './ComponentApp2': './src/ComponentApp2'
